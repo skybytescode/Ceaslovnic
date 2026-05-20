@@ -54,6 +54,83 @@
     return SCHEDULE[0]; // wraps to tomorrow
   }
 
+  // ── Notifications ────────────────────────────────────────────────────────
+  // A 5-minute reminder fires before each slot, once per upcoming slot.
+  // Opt-in via the 🔔 button; state persists in localStorage.
+  const REMINDER_OFFSET = 5;
+  const NOTIF_KEY = "ceaslovnic.notify";
+  const notifBtn = document.getElementById("notif-btn");
+  let lastNotifiedSlug = null;
+
+  const notifSupported = "Notification" in globalThis;
+
+  function notifEnabled() {
+    return (
+      notifSupported &&
+      Notification.permission === "granted" &&
+      localStorage.getItem(NOTIF_KEY) === "1"
+    );
+  }
+
+  function updateNotifBtn() {
+    if (!notifSupported) {
+      notifBtn.style.display = "none";
+      return;
+    }
+    const on = notifEnabled();
+    notifBtn.textContent = on ? "🔔" : "🔕";
+    notifBtn.title = on
+      ? "Notificările sunt active. Atinge pentru a opri."
+      : "Activează notificările pentru fiecare ceas (cu 5 min înainte).";
+    notifBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+
+  async function toggleNotif() {
+    if (!notifSupported) return;
+    if (Notification.permission === "denied") {
+      alert("Notificările sunt blocate de browser. Activează-le din setările site-ului.");
+      return;
+    }
+    if (Notification.permission === "default") {
+      const result = await Notification.requestPermission();
+      if (result !== "granted") {
+        updateNotifBtn();
+        return;
+      }
+    }
+    if (localStorage.getItem(NOTIF_KEY) === "1") {
+      localStorage.removeItem(NOTIF_KEY);
+    } else {
+      localStorage.setItem(NOTIF_KEY, "1");
+    }
+    updateNotifBtn();
+  }
+
+  notifBtn.addEventListener("click", toggleNotif);
+  updateNotifBtn();
+
+  function minutesUntil(nowMin, slot) {
+    let diff = toMinutes(slot.time) - nowMin;
+    if (diff < 0) diff += 24 * 60;
+    return diff;
+  }
+
+  function fireReminder(slot, minutes) {
+    if (!notifEnabled()) return;
+    try {
+      new Notification("Ceaslovnic", {
+        body: `În ${minutes} min: ${slot.title} (${slot.time})`,
+        icon: "css/chi-rho.png",
+        tag: "ceaslovnic-reminder",
+      });
+    } catch (err) {
+      // Some browsers (e.g. mobile Safari) require the ServiceWorker path —
+      // log so the user can debug from devtools, but don't break the loop.
+      console.warn("Ceaslovnic: notification failed", err);
+    }
+  }
+
+  // ── Main tick ────────────────────────────────────────────────────────────
   let currentSlug = null;
 
   function tick() {
@@ -65,7 +142,17 @@
     slotEl.textContent = active.time + " · " + active.title;
     nextEl.textContent = "Următor: " + next.time + " · " + next.title;
 
+    // Fire the reminder once when the upcoming slot is within the offset window.
+    const untilNext = minutesUntil(t.minutes, next);
+    if (untilNext > 0 && untilNext <= REMINDER_OFFSET && next.slug !== lastNotifiedSlug) {
+      fireReminder(next, untilNext);
+      lastNotifiedSlug = next.slug;
+    }
+
     if (active.slug !== currentSlug) {
+      // We've just rolled into the slot we previously notified about; clear
+      // the marker so the *next* upcoming slot can be notified about.
+      if (active.slug === lastNotifiedSlug) lastNotifiedSlug = null;
       currentSlug = active.slug;
       frame.src = "content/" + active.slug + ".html";
       document.title = "Ceaslovnic · " + active.title;
