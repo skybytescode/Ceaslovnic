@@ -1,8 +1,8 @@
 (function () {
   "use strict";
 
-  const SCHEDULE = window.CEASLOVNIC_SCHEDULE;
-  const TZ = window.CEASLOVNIC_TZ;
+  const SCHEDULE = globalThis.CEASLOVNIC_SCHEDULE;
+  const TZ = globalThis.CEASLOVNIC_TZ;
   const frame = document.getElementById("player-frame");
   const nowEl = document.getElementById("status-now");
   const slotEl = document.getElementById("status-slot");
@@ -21,9 +21,9 @@
       month: "short"
     }).formatToParts(new Date());
     const get = (t) => parts.find((p) => p.type === t)?.value || "";
-    const h = parseInt(get("hour"), 10);
-    const m = parseInt(get("minute"), 10);
-    const s = parseInt(get("second"), 10);
+    const h = Number.parseInt(get("hour"), 10);
+    const m = Number.parseInt(get("minute"), 10);
+    const s = Number.parseInt(get("second"), 10);
     const hhmm = String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
     const label =
       get("weekday") + " " + get("day") + " " + get("month") + " · " +
@@ -226,11 +226,40 @@
   // Fullscreen toggle on click of the small badge.
   const fsBtn = document.getElementById("fs-btn");
   fsBtn.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen?.();
-    } else {
+    if (document.fullscreenElement) {
       document.exitFullscreen?.();
+    } else {
+      document.documentElement.requestFullscreen?.();
     }
+  });
+
+  // ── PWA install nudge ─────────────────────────────────────────────────────
+  // Chromium-based browsers fire `beforeinstallprompt` once the PWA criteria
+  // are met. We stash the event, reveal the install button, and call prompt()
+  // on click. Hidden again once accepted or after `appinstalled`. iOS Safari
+  // never fires this event (Add to Home Screen is manual via Share); the
+  // button just stays hidden there.
+  const installBtn = document.getElementById("install-btn");
+  let deferredInstallPrompt = null;
+  globalThis.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    installBtn.hidden = false;
+  });
+  installBtn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    try {
+      await deferredInstallPrompt.userChoice;
+    } catch (err) {
+      console.warn("Ceaslovnic: install prompt failed", err);
+    }
+    deferredInstallPrompt = null;
+    installBtn.hidden = true;
+  });
+  globalThis.addEventListener("appinstalled", () => {
+    installBtn.hidden = true;
+    deferredInstallPrompt = null;
   });
 
   // First render, then align to the next wall-clock second so the seconds in the status bar tick cleanly.

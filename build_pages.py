@@ -7,6 +7,7 @@ Renders the parsed Word content with Orthodox-book typography:
   • paragraph alignment from the source (left / centre / justify) is preserved
   • empty "spacer" blocks are dropped — paragraph margins handle the rhythm
 """
+import hashlib
 import html
 import json
 import re
@@ -17,7 +18,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).parent
 CONTENT = json.loads((ROOT / "content.json").read_text(encoding="utf-8"))
-OUT_DIR = ROOT / "docs" / "content"
+DOCS_DIR = ROOT / "docs"
+OUT_DIR = DOCS_DIR / "content"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # (time, slug, title, docx_stem) — must mirror site/js/schedule.js.
@@ -277,6 +279,40 @@ def render_page(slot_time, slug, title, docx_stem, prev_slug, prev_title, next_s
 """
 
 
+def _docs_cache_version():
+    """Content-derived cache version for the service worker. Hashes every
+    file under docs/ except sw.js itself (would be self-referential) so a
+    rebuild with no asset changes leaves the version untouched."""
+    h = hashlib.sha256()
+    paths = sorted(
+        p for p in DOCS_DIR.rglob("*")
+        if p.is_file() and p.name != "sw.js"
+    )
+    for p in paths:
+        h.update(p.relative_to(DOCS_DIR).as_posix().encode("utf-8"))
+        h.update(b"\0")
+        h.update(p.read_bytes())
+    return "v" + h.hexdigest()[:10]
+
+
+def _update_sw_cache_version(version):
+    """Rewrite `const CACHE_VERSION = "…"` in docs/sw.js to the given value.
+    Returns True if the file changed."""
+    sw = DOCS_DIR / "sw.js"
+    text = sw.read_text(encoding="utf-8")
+    new_text = re.sub(
+        r'^(\s*const\s+CACHE_VERSION\s*=\s*")[^"]*(";)',
+        r'\g<1>' + version + r'\g<2>',
+        text,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    if new_text == text:
+        return False
+    sw.write_text(new_text, encoding="utf-8")
+    return True
+
+
 def main():
     n = len(SCHEDULE)
     for i, (slot_time, slug, title, stem) in enumerate(SCHEDULE):
@@ -286,6 +322,14 @@ def main():
         path = OUT_DIR / f"{slug}.html"
         path.write_text(html_doc, encoding="utf-8")
         print(f"wrote {path.relative_to(ROOT)}")
+
+    # Refresh the service-worker cache version from a hash of all docs/ assets.
+    # No-op if nothing changed since the last build.
+    version = _docs_cache_version()
+    if _update_sw_cache_version(version):
+        print(f"bumped sw.js CACHE_VERSION → {version}")
+    else:
+        print(f"sw.js CACHE_VERSION already {version} (no change)")
 
 
 if __name__ == "__main__":
