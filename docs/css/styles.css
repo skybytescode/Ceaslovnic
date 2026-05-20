@@ -10,10 +10,10 @@
   --rule:      #c4cae6;
   --gold:      #d4af37;       /* available token (currently unused) */
   --shadow:    0 1px 2px rgba(30, 30, 60, 0.06), 0 6px 24px rgba(30, 30, 60, 0.10);
-  /* Star of David in accent indigo (#3a4b8c) — reused as 4 corner ornaments
-     via background-image on .page__inner. Defined inline so we don't need
-     a separate SVG asset (and so the cache version still tracks it). */
-  --star: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12,1 21.5,17.5 2.5,17.5' fill='%233a4b8c'/><polygon points='21.5,6.5 12,23 2.5,6.5' fill='%233a4b8c'/></svg>");
+  /* Star of David outlined in accent indigo (#3a4b8c) — no fill, so the
+     paper background shows through the triangles and the central hexagon.
+     Reused as 4 corner ornaments via background-image on .page__inner. */
+  --star: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='%233a4b8c' stroke-width='2.2' stroke-linejoin='round'><polygon points='12,1 21.5,17.5 2.5,17.5'/><polygon points='21.5,6.5 12,23 2.5,6.5'/></g></svg>");
   --maxw:      62ch;
   --font-display: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
   --font-body:    "Lora", "Georgia", "Times New Roman", serif;
