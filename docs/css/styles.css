@@ -8,7 +8,7 @@
   --accent-2:  #6b7ec4;       /* lighter indigo */
   --rubric:    #980000;       /* liturgical rubric red (matches source docx) */
   --rule:      #c4cae6;
-  --gold:      #c9a86b;       /* warm Byzantine gold for the page frame */
+  --gold:      #d4af37;       /* classic metallic gold for the page frame */
   --shadow:    0 1px 2px rgba(30, 30, 60, 0.06), 0 6px 24px rgba(30, 30, 60, 0.10);
   --maxw:      62ch;
   --font-display: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
@@ -52,16 +52,12 @@ body {
   background: var(--paper);
   padding: clamp(2.5rem, 5.5vw, 3.75rem) clamp(1.75rem, 4.5vw, 3rem) clamp(2rem, 4vw, 2.75rem);
   margin: 0.75rem;
-  /* Three concentric gold lines drawn just inside the card edge.
-     Each "paper" inset masks the previous gold inset's interior, so the
-     visible band of each inset is its (spread) – (previous spread). */
+  /* A single gold rule drawn just inside the card edge. The paper inset
+     masks the gold inset's interior, so only the band between (paper) and
+     (gold) — 1.5px — remains visible. */
   box-shadow:
-    inset 0 0 0 4px    var(--paper),  /* 4px buffer from the edge */
-    inset 0 0 0 5.5px  var(--gold),   /* outermost gold line (1.5px) */
-    inset 0 0 0 9.5px  var(--paper),  /* 4px gap */
-    inset 0 0 0 10.5px var(--gold),   /* middle gold line (1px) */
-    inset 0 0 0 14.5px var(--paper),  /* 4px gap */
-    inset 0 0 0 15.5px var(--gold),   /* innermost gold line (1px) */
+    inset 0 0 0 5px   var(--paper),   /* 5px buffer from the edge */
+    inset 0 0 0 6.5px var(--gold),    /* the single 1.5px gold line */
     var(--shadow);                    /* preserve the card's drop shadow */
 }
 
