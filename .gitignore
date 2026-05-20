@@ -1,0 +1,20 @@
+# Old folder name — kept locally because a watcher is holding it open. Delete
+# once you can; in the meantime keep it out of the published repo.
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

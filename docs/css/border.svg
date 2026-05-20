@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!--
+    Orthodox chenar with sacred geometry, v3:
+      • outer + inner perimeter rules (continuous, drawn before slicing)
+      • each EDGE tile: a Star of David medallion at its centre, with a
+        Flower-of-Life chain flanking it on both sides. When tiled by
+        CSS border-image (slice = 40), a star reappears at every step.
+      • each CORNER: a LARGE Star of David (r = 14, almost filling the
+        40 × 40 corner cell), inscribed in a triple ring, with the
+        seven-circle Seed of Life sitting behind the star.
+      • pearl chain along the inside of the inner rule.
+    Ink colour: indigo (#3a4b8c).
+  -->
+
+  <g fill="none" stroke="#3a4b8c" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ─────────── perimeter rules ─────────── -->
+    <rect x="3.5" y="3.5" width="113" height="113" stroke-width="1.1"/>
+    <rect x="33"  y="33"  width="54"  height="54"  stroke-width="0.55"/>
+
+    <!-- ════════════ TOP EDGE: chain → star → chain ════════════
+         Chain circles at y=14, r=3, centres every 3 px (vesica-piscis).
+         Star of David medallion centred at (60, 14), r = 7.
+    -->
+    <!-- Flower-of-Life chain on the left half -->
+    <g stroke-width="0.55">
+      <circle cx="40" cy="14" r="3"/>
+      <circle cx="43" cy="14" r="3"/>
+      <circle cx="46" cy="14" r="3"/>
+      <circle cx="49" cy="14" r="3"/>
+      <circle cx="52" cy="14" r="3"/>
+    </g>
+    <!-- Star of David medallion at centre -->
+    <g>
+      <circle cx="60" cy="14" r="8.5" stroke-width="0.55"/>
+      <circle cx="60" cy="14" r="7"   stroke-width="0.9"/>
+      <!-- two interlocking triangles, vertices at r=7 from centre -->
+      <g stroke-width="0.95">
+        <path d="M60 7 L66.06 17.5 L53.94 17.5 Z"/>
+        <path d="M60 21 L66.06 10.5 L53.94 10.5 Z"/>
+      </g>
+      <circle cx="60" cy="14" r="0.9" fill="#3a4b8c" stroke="none"/>
+    </g>
+    <!-- chain on the right half -->
+    <g stroke-width="0.55">
+      <circle cx="68" cy="14" r="3"/>
+      <circle cx="71" cy="14" r="3"/>
+      <circle cx="74" cy="14" r="3"/>
+      <circle cx="77" cy="14" r="3"/>
+      <circle cx="80" cy="14" r="3"/>
+    </g>
+    <!-- pearl chain along the inside of the inner rule -->
+    <g fill="#3a4b8c" stroke="none">
+      <circle cx="44" cy="36" r="1.0"/>
+      <circle cx="52" cy="36" r="1.0"/>
+      <circle cx="60" cy="36" r="1.25"/>
+      <circle cx="68" cy="36" r="1.0"/>
+      <circle cx="76" cy="36" r="1.0"/>
+    </g>
+
+    <!-- ════════════ BOTTOM EDGE (mirrored) ════════════ -->
+    <g transform="translate(0 120) scale(1 -1)">
+      <g stroke-width="0.55">
+        <circle cx="40" cy="14" r="3"/><circle cx="43" cy="14" r="3"/>
+        <circle cx="46" cy="14" r="3"/><circle cx="49" cy="14" r="3"/>
+        <circle cx="52" cy="14" r="3"/>
+      </g>
+      <g>
+        <circle cx="60" cy="14" r="8.5" stroke-width="0.55"/>
+        <circle cx="60" cy="14" r="7"   stroke-width="0.9"/>
+        <g stroke-width="0.95">
+          <path d="M60 7 L66.06 17.5 L53.94 17.5 Z"/>
+          <path d="M60 21 L66.06 10.5 L53.94 10.5 Z"/>
+        </g>
+        <circle cx="60" cy="14" r="0.9" fill="#3a4b8c" stroke="none"/>
+      </g>
+      <g stroke-width="0.55">
+        <circle cx="68" cy="14" r="3"/><circle cx="71" cy="14" r="3"/>
+        <circle cx="74" cy="14" r="3"/><circle cx="77" cy="14" r="3"/>
+        <circle cx="80" cy="14" r="3"/>
+      </g>
+      <g fill="#3a4b8c" stroke="none">
+        <circle cx="44" cy="36" r="1.0"/><circle cx="52" cy="36" r="1.0"/>
+        <circle cx="60" cy="36" r="1.25"/>
+        <circle cx="68" cy="36" r="1.0"/><circle cx="76" cy="36" r="1.0"/>
+      </g>
+    </g>
+
+    <!-- ════════════ LEFT EDGE (rotated −90°) ════════════ -->
+    <g transform="rotate(-90 60 60)">
+      <g stroke-width="0.55">
+        <circle cx="40" cy="14" r="3"/><circle cx="43" cy="14" r="3"/>
+        <circle cx="46" cy="14" r="3"/><circle cx="49" cy="14" r="3"/>
+        <circle cx="52" cy="14" r="3"/>
+      </g>
+      <g>
+        <circle cx="60" cy="14" r="8.5" stroke-width="0.55"/>
+        <circle cx="60" cy="14" r="7"   stroke-width="0.9"/>
+        <g stroke-width="0.95">
+          <path d="M60 7 L66.06 17.5 L53.94 17.5 Z"/>
+          <path d="M60 21 L66.06 10.5 L53.94 10.5 Z"/>
+        </g>
+        <circle cx="60" cy="14" r="0.9" fill="#3a4b8c" stroke="none"/>
+      </g>
+      <g stroke-width="0.55">
+        <circle cx="68" cy="14" r="3"/><circle cx="71" cy="14" r="3"/>
+        <circle cx="74" cy="14" r="3"/><circle cx="77" cy="14" r="3"/>
+        <circle cx="80" cy="14" r="3"/>
+      </g>
+      <g fill="#3a4b8c" stroke="none">
+        <circle cx="44" cy="36" r="1.0"/><circle cx="52" cy="36" r="1.0"/>
+        <circle cx="60" cy="36" r="1.25"/>
+        <circle cx="68" cy="36" r="1.0"/><circle cx="76" cy="36" r="1.0"/>
+      </g>
+    </g>
+
+    <!-- ════════════ RIGHT EDGE (rotated +90°) ════════════ -->
+    <g transform="rotate(90 60 60)">
+      <g stroke-width="0.55">
+        <circle cx="40" cy="14" r="3"/><circle cx="43" cy="14" r="3"/>
+        <circle cx="46" cy="14" r="3"/><circle cx="49" cy="14" r="3"/>
+        <circle cx="52" cy="14" r="3"/>
+      </g>
+      <g>
+        <circle cx="60" cy="14" r="8.5" stroke-width="0.55"/>
+        <circle cx="60" cy="14" r="7"   stroke-width="0.9"/>
+        <g stroke-width="0.95">
+          <path d="M60 7 L66.06 17.5 L53.94 17.5 Z"/>
+          <path d="M60 21 L66.06 10.5 L53.94 10.5 Z"/>
+        </g>
+        <circle cx="60" cy="14" r="0.9" fill="#3a4b8c" stroke="none"/>
+      </g>
+      <g stroke-width="0.55">
+        <circle cx="68" cy="14" r="3"/><circle cx="71" cy="14" r="3"/>
+        <circle cx="74" cy="14" r="3"/><circle cx="77" cy="14" r="3"/>
+        <circle cx="80" cy="14" r="3"/>
+      </g>
+      <g fill="#3a4b8c" stroke="none">
+        <circle cx="44" cy="36" r="1.0"/><circle cx="52" cy="36" r="1.0"/>
+        <circle cx="60" cy="36" r="1.25"/>
+        <circle cx="68" cy="36" r="1.0"/><circle cx="76" cy="36" r="1.0"/>
+      </g>
+    </g>
+
+    <!-- ════════════ TOP-LEFT CORNER: LARGE Star of David ════════════
+         Star centred at (20, 20), outer-vertex radius 14.
+         Star vertices (cx + r·sinθ, cy − r·cosθ for θ ∈ {0,60,...,300}):
+           top (0°)        : (20,  6)
+           upper-right (60°): (32.12, 13)
+           lower-right(120°): (32.12, 27)
+           bottom (180°)   : (20, 34)
+           lower-left(240°) : ( 7.88, 27)
+           upper-left(300°) : ( 7.88, 13)
+    -->
+    <g>
+      <!-- mandorla rings -->
+      <circle cx="20" cy="20" r="16" stroke-width="1.0"/>
+      <circle cx="20" cy="20" r="14.6" stroke-width="0.4"/>
+      <!-- Seed of Life behind the star: 1 central + 6 satellites, r=4 -->
+      <g stroke-width="0.35">
+        <circle cx="20" cy="20" r="4"/>
+        <circle cx="24"    cy="20"    r="4"/>
+        <circle cx="22"    cy="23.464" r="4"/>
+        <circle cx="18"    cy="23.464" r="4"/>
+        <circle cx="16"    cy="20"    r="4"/>
+        <circle cx="18"    cy="16.536" r="4"/>
+        <circle cx="22"    cy="16.536" r="4"/>
+      </g>
+      <!-- Star of David: two interlocking triangles -->
+      <g stroke-width="1.25">
+        <path d="M20 6 L32.12 27 L7.88 27 Z"/>
+        <path d="M20 34 L32.12 13 L7.88 13 Z"/>
+      </g>
+      <!-- centre pearl -->
+      <circle cx="20" cy="20" r="1.4" fill="#3a4b8c" stroke="none"/>
+    </g>
+
+    <!-- ════════════ TOP-RIGHT CORNER (mirror X) ════════════ -->
+    <g transform="translate(120 0) scale(-1 1)">
+      <circle cx="20" cy="20" r="16" stroke-width="1.0"/>
+      <circle cx="20" cy="20" r="14.6" stroke-width="0.4"/>
+      <g stroke-width="0.35">
+        <circle cx="20" cy="20" r="4"/>
+        <circle cx="24" cy="20" r="4"/>
+        <circle cx="22" cy="23.464" r="4"/>
+        <circle cx="18" cy="23.464" r="4"/>
+        <circle cx="16" cy="20" r="4"/>
+        <circle cx="18" cy="16.536" r="4"/>
+        <circle cx="22" cy="16.536" r="4"/>
+      </g>
+      <g stroke-width="1.25">
+        <path d="M20 6 L32.12 27 L7.88 27 Z"/>
+        <path d="M20 34 L32.12 13 L7.88 13 Z"/>
+      </g>
+      <circle cx="20" cy="20" r="1.4" fill="#3a4b8c" stroke="none"/>
+    </g>
+
+    <!-- ════════════ BOTTOM-LEFT CORNER (mirror Y) ════════════ -->
+    <g transform="translate(0 120) scale(1 -1)">
+      <circle cx="20" cy="20" r="16" stroke-width="1.0"/>
+      <circle cx="20" cy="20" r="14.6" stroke-width="0.4"/>
+      <g stroke-width="0.35">
+        <circle cx="20" cy="20" r="4"/>
+        <circle cx="24" cy="20" r="4"/>
+        <circle cx="22" cy="23.464" r="4"/>
+        <circle cx="18" cy="23.464" r="4"/>
+        <circle cx="16" cy="20" r="4"/>
+        <circle cx="18" cy="16.536" r="4"/>
+        <circle cx="22" cy="16.536" r="4"/>
+      </g>
+      <g stroke-width="1.25">
+        <path d="M20 6 L32.12 27 L7.88 27 Z"/>
+        <path d="M20 34 L32.12 13 L7.88 13 Z"/>
+      </g>
+      <circle cx="20" cy="20" r="1.4" fill="#3a4b8c" stroke="none"/>
+    </g>
+
+    <!-- ════════════ BOTTOM-RIGHT CORNER (rotate 180°) ════════════ -->
+    <g transform="translate(120 120) scale(-1 -1)">
+      <circle cx="20" cy="20" r="16" stroke-width="1.0"/>
+      <circle cx="20" cy="20" r="14.6" stroke-width="0.4"/>
+      <g stroke-width="0.35">
+        <circle cx="20" cy="20" r="4"/>
+        <circle cx="24" cy="20" r="4"/>
+        <circle cx="22" cy="23.464" r="4"/>
+        <circle cx="18" cy="23.464" r="4"/>
+        <circle cx="16" cy="20" r="4"/>
+        <circle cx="18" cy="16.536" r="4"/>
+        <circle cx="22" cy="16.536" r="4"/>
+      </g>
+      <g stroke-width="1.25">
+        <path d="M20 6 L32.12 27 L7.88 27 Z"/>
+        <path d="M20 34 L32.12 13 L7.88 13 Z"/>
+      </g>
+      <circle cx="20" cy="20" r="1.4" fill="#3a4b8c" stroke="none"/>
+    </g>
+
+  </g>
+</svg>
