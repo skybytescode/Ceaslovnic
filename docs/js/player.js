@@ -54,6 +54,21 @@
     return SCHEDULE[0]; // wraps to tomorrow
   }
 
+  // ── Service worker & PWA ────────────────────────────────────────────────
+  // Registering the SW enables (a) offline caching for the whole site and
+  // (b) Notification Triggers — scheduled reminders that fire even when
+  // the player tab is closed, on browsers that support TimestampTrigger
+  // (currently Chromium-based desktop & Android). Falls back to the in-tab
+  // tick-based notifications otherwise.
+  let triggersAvailable = false;
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => {
+        triggersAvailable = globalThis.TimestampTrigger !== undefined;
+      })
+      .catch((err) => console.warn("Ceaslovnic: SW registration failed", err));
+  }
+
   // ── Notifications ────────────────────────────────────────────────────────
   // A 5-minute reminder fires before each slot, once per upcoming slot.
   // Opt-in via the 🔔 button; state persists in localStorage.
@@ -85,6 +100,50 @@
     notifBtn.setAttribute("aria-pressed", on ? "true" : "false");
   }
 
+  function minutesUntil(nowMin, slot) {
+    let diff = toMinutes(slot.time) - nowMin;
+    if (diff < 0) diff += 24 * 60;
+    return diff;
+  }
+
+  // Schedule one TimestampTrigger per upcoming slot via the service-worker
+  // registration. Fires even when the tab is closed on browsers that support
+  // the Notification Triggers API (Chromium-based). No-op otherwise.
+  async function scheduleSWReminders() {
+    if (!triggersAvailable || !notifEnabled()) return;
+    let reg;
+    try { reg = await navigator.serviceWorker.ready; } catch { return; }
+    const t = nowInZone();
+    for (const slot of SCHEDULE) {
+      const ahead = minutesUntil(t.minutes, slot);
+      if (ahead <= REMINDER_OFFSET) continue;       // too late to remind
+      const ts = Date.now() + (ahead - REMINDER_OFFSET) * 60_000;
+      try {
+        await reg.showNotification("Ceaslovnic", {
+          body: `În ${REMINDER_OFFSET} min: ${slot.title} (${slot.time})`,
+          icon: "css/chi-rho.png",
+          tag: "ceaslovnic-" + slot.slug,           // same tag replaces on reschedule
+          showTrigger: new globalThis.TimestampTrigger(ts),
+        });
+      } catch (err) {
+        console.warn("Ceaslovnic: schedule failed for " + slot.slug, err);
+      }
+    }
+  }
+
+  async function clearSWReminders() {
+    if (!("serviceWorker" in navigator)) return;
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const all = await reg.getNotifications({ includeTriggered: false });
+      for (const n of all) {
+        if (n.tag?.startsWith("ceaslovnic-")) n.close();
+      }
+    } catch (err) {
+      console.warn("Ceaslovnic: clear failed", err);
+    }
+  }
+
   async function toggleNotif() {
     if (!notifSupported) return;
     if (Notification.permission === "denied") {
@@ -100,23 +159,25 @@
     }
     if (localStorage.getItem(NOTIF_KEY) === "1") {
       localStorage.removeItem(NOTIF_KEY);
+      await clearSWReminders();
     } else {
       localStorage.setItem(NOTIF_KEY, "1");
+      await scheduleSWReminders();
     }
     updateNotifBtn();
   }
 
   notifBtn.addEventListener("click", toggleNotif);
   updateNotifBtn();
-
-  function minutesUntil(nowMin, slot) {
-    let diff = toMinutes(slot.time) - nowMin;
-    if (diff < 0) diff += 24 * 60;
-    return diff;
-  }
+  // If notifications were already enabled from a previous session, refresh
+  // the SW-scheduled reminders for the next 24h on this load.
+  if (notifEnabled()) scheduleSWReminders();
 
   function fireReminder(slot, minutes) {
-    if (!notifEnabled()) return;
+    // The SW path (Notification Triggers) covers tab-closed delivery on
+    // supporting browsers. When that's active, skip the in-tab fallback so
+    // we don't double up.
+    if (!notifEnabled() || triggersAvailable) return;
     try {
       new Notification("Ceaslovnic", {
         body: `În ${minutes} min: ${slot.title} (${slot.time})`,
@@ -153,6 +214,9 @@
       // We've just rolled into the slot we previously notified about; clear
       // the marker so the *next* upcoming slot can be notified about.
       if (active.slug === lastNotifiedSlug) lastNotifiedSlug = null;
+      // Each slot transition refreshes the rolling 24h schedule of triggers,
+      // so the slot we just consumed gets replaced with one for ~24h later.
+      if (currentSlug !== null) scheduleSWReminders();
       currentSlug = active.slug;
       frame.src = "content/" + active.slug + ".html";
       document.title = "Ceaslovnic · " + active.title;
