@@ -28,6 +28,7 @@ RUBRIC_HEXES = {"980000", "ff0000", "c00000", "cc0000", "cc4125", "e30000"}
 # during run_text, so the fix lives in one place and survives re-extraction.
 TYPO_FIXES = {
     "mânturiea": "mântuirea",
+    "pe cai mândri": "pe cei mândri",
 }
 
 
@@ -83,7 +84,7 @@ def run_text(r):
             parts.append("\t")
         elif tag == "br":
             parts.append("\n")
-    return _apply_typo_fixes("".join(parts))
+    return "".join(parts)
 
 
 def collect_runs(p):
@@ -103,6 +104,10 @@ def collect_runs(p):
             merged[-1]["text"] += run["text"]
         else:
             merged.append(dict(run))
+    # Apply typo fixes AFTER merging so corrections can span what used to be
+    # separate <w:r> runs in the source docx (e.g. "pe " + "cai" + " mândri").
+    for run in merged:
+        run["text"] = _apply_typo_fixes(run["text"])
     return merged
 
 
