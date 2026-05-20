@@ -8,8 +8,12 @@
   --accent-2:  #6b7ec4;       /* lighter indigo */
   --rubric:    #980000;       /* liturgical rubric red (matches source docx) */
   --rule:      #c4cae6;
-  --gold:      #d4af37;       /* classic metallic gold for the page frame */
+  --gold:      #d4af37;       /* available token (currently unused) */
   --shadow:    0 1px 2px rgba(30, 30, 60, 0.06), 0 6px 24px rgba(30, 30, 60, 0.10);
+  /* Star of David in accent indigo (#3a4b8c) — reused as 4 corner ornaments
+     via background-image on .page__inner. Defined inline so we don't need
+     a separate SVG asset (and so the cache version still tracks it). */
+  --star: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12,1 21.5,17.5 2.5,17.5' fill='%233a4b8c'/><polygon points='21.5,6.5 12,23 2.5,6.5' fill='%233a4b8c'/></svg>");
   --maxw:      62ch;
   --font-display: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
   --font-body:    "Lora", "Georgia", "Times New Roman", serif;
@@ -49,16 +53,26 @@ body {
   position: relative;
   width: 100%;
   max-width: var(--maxw);
-  background: var(--paper);
   padding: clamp(2.5rem, 5.5vw, 3.75rem) clamp(1.75rem, 4.5vw, 3rem) clamp(2rem, 4vw, 2.75rem);
   margin: 0.75rem;
-  /* A single gold rule drawn just inside the card edge. The paper inset
-     masks the gold inset's interior, so only the band between (paper) and
-     (gold) — 1.5px — remains visible. */
+  /* Cream card with a rubric-red rule and a blue Star of David in each of
+     the four corners. The paper inset masks the rubric inset's interior so
+     only the 1.5px band between them shows as a red line. Stars are
+     positioned inside the rule (8px from each edge) so the inset shadow
+     doesn't clip them. */
+  background-color: var(--paper);
+  background-image: var(--star), var(--star), var(--star), var(--star);
+  background-position:
+    left 8px top 8px,
+    right 8px top 8px,
+    left 8px bottom 8px,
+    right 8px bottom 8px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
   box-shadow:
-    inset 0 0 0 5px   var(--paper),   /* 5px buffer from the edge */
-    inset 0 0 0 6.5px var(--gold),    /* the single 1.5px gold line */
-    var(--shadow);                    /* preserve the card's drop shadow */
+    inset 0 0 0 5px   var(--paper),
+    inset 0 0 0 6.5px var(--rubric),
+    var(--shadow);
 }
 
 @media (max-width: 720px) {
