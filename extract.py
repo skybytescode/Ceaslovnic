@@ -29,6 +29,7 @@ RUBRIC_HEXES = {"980000", "ff0000", "c00000", "cc0000", "cc4125", "e30000"}
 TYPO_FIXES = {
     "mânturiea": "mântuirea",
     "pe cai mândri": "pe cei mândri",
+    "printr-ei": "printr-înșii",
 }
 
 

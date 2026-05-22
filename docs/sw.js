@@ -5,7 +5,7 @@
 //
 // Bump CACHE_VERSION whenever asset URLs change so old caches are evicted.
 
-const CACHE_VERSION = "v4a0070ad6c";
+const CACHE_VERSION = "v7e47bbf692";
 const CACHE = "ceaslovnic-" + CACHE_VERSION;
 
 const ASSETS = [
