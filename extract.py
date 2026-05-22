@@ -30,6 +30,11 @@ TYPO_FIXES = {
     "mânturiea": "mântuirea",
     "pe cai mândri": "pe cei mândri",
     "printr-ei": "printr-înșii",
+    # Long Vecernia litany of many saints ends with the singular "roagă-te"
+    # but should be the plural "rugați-vă". Other singular "roagă-te" usages
+    # have "ca să" instead of "să", so the full phrase below is unique.
+    "roagă-te lui Hristos Dumnezeu să mântuiască sufletele noastre":
+        "rugați-vă lui Hristos Dumnezeu să mântuiască sufletele noastre",
 }
 
 
